@@ -4,20 +4,21 @@
 #define S2 6
 #define S3 7
 #define sensorOut 8
-#include "api.h"
 #include "rgb.h"
 
-RGB rgbValues;
+RGBv rgbValue;
 
 // 0 is red, 1 is blue, 2 is green, 3 is black, the starting state
 int currentState = 3;
 int previousState = 3;
 
 // stores the original numbers for each color (default)
-int origRed, origBlue, origGreen = -1;
+int origRed = -1;
+int origBlue = -1;
+int origGreen = -1;
 
 // Delta used to detect entry into circle
-int enterCircleThreshold = 20;
+int enterCircleThreshold = 200;
 bool enteredCircle = false;
 
 void setup() {
@@ -31,10 +32,11 @@ void setup() {
 
 	pinMode(sensorOut, INPUT);
 
+  getRGB(&rgbValue);
 	if (origRed == -1 && origBlue == -1 && origGreen == -1) {
-		origRed = rgbValues->red;
-		origBlue = rgbValues->bluePW;
-		origGreen = rgbValues->greenPW;
+		origRed = rgbValue.redPW;
+		origBlue = rgbValue.bluePW;
+		origGreen = rgbValue.greenPW;
 	}
 
 	Serial.begin(9600);
@@ -43,33 +45,42 @@ void setup() {
 void loop() {
 
 	while (!enteredCircle) {
-		getRGB(&rgbValues);
-		int delta = rgbValues->getDelta();
+		getRGB(&rgbValue);
+		int delta = getDelta(&rgbValue, origRed, origBlue, origGreen);
 		if (delta > enterCircleThreshold) {
 		enteredCircle = true;
+    Serial.println("Entered Circle");
 		}
+    Serial.println("Current State = BLACK");
+    Serial.print("Red PW = ");
+    Serial.print(origRed);
+    Serial.print(" - Green PW = ");
+    Serial.print(origGreen);
+    Serial.print(" - Blue PW = ");
+    Serial.println(origBlue);
+
+    Serial.println("Current State = BLACK");
+    Serial.print("Red PW = ");
+    Serial.print(rgbValue.redPW);
+    Serial.print(" - Green PW = ");
+    Serial.print(rgbValue.greenPW);
+    Serial.print(" - Blue PW = ");
+    Serial.println(rgbValue.bluePW);
+    continue;
 	}
 
+  delay(5000);
+
 	// get current state (0 = red, 1 = blue, 2 = green, 3 = black)
-	getRGB(&rgbValues);
-	currentState = getMinimum(rgbValues->red, rgbValues->bluePW, rgbValues->greenPW);
-
-	// delay to stabilize sensor
-	redPW = getRedPW();
-	delay(200);
-
-	greenPW = getGreenPW();
-	delay(200);
-
-	bluePW = getBluePW();
-	delay(200);
+	getRGB(&rgbValue);
+	currentState = getMinimum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
 
 	Serial.print("Red PW = ");
-	Serial.print(rgbValues->red);
+	Serial.print(rgbValue.redPW);
 	Serial.print(" - Green PW = ");
-	Serial.print(rgbValues->greenPW);
+	Serial.print(rgbValue.greenPW);
 	Serial.print(" - Blue PW = ");
-	Serial.println(rgbValues->bluePW);
+	Serial.println(rgbValue.bluePW);
 
 	Serial.print("Current State = ");
 	if (currentState == 0) {
@@ -79,7 +90,7 @@ void loop() {
 	} else if (currentState == 2) {
 		Serial.println("GREEN");
 	} else {
-		Serial.println("BROWN");
+		Serial.println("BLACK");
 	}
 
 	Serial.print("Previous State = ");
@@ -93,7 +104,7 @@ void loop() {
 		} else if (previousState == 2) {
 		Serial.println("GREEN");
 		} else {
-		Serial.println("BROWN");
+		Serial.println("BLACK");
 		}
   }
 

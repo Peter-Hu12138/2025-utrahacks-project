@@ -23,3 +23,14 @@ void getRGB(RGBv *rgb) {
 int getDelta(RGBv *rgb,int origRed,int origBlue, int origGreen) {
   return (abs(rgb->redPW - origRed) + abs(rgb->bluePW - origBlue) + abs(rgb->greenPW - origGreen));
 }
+
+int getMinimum(int red, int blue, int green) {
+  // get current state based on which color value is the lowest
+  if (min(red, blue) == red && min(red, green) == red) {
+    return 0;
+  } else if (min(blue, red) == blue && min(blue, green) == blue) {
+    return 1;
+  } else {
+    return 2;
+  }
+}
