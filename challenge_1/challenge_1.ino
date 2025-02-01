@@ -12,7 +12,8 @@ int greenPW = 0;
 int bluePW = 0;
 
 void setup() {
-	// Set S0 - S3 as outputs
+	//Color sensor pins
+	//Set S0 - S3 as outputs
 	pinMode(S0, OUTPUT);
 	pinMode(S1, OUTPUT);
 	pinMode(S2, OUTPUT);
@@ -30,6 +31,7 @@ void setup() {
 }
 
 void loop() {
+	//Color Detection
 	// Read Red Pulse Width
 	redPW = getRedPW();
 	// Delay to stabilize sensor
@@ -52,4 +54,6 @@ void loop() {
 	Serial.print(greenPW);
 	Serial.print(" - Blue PW = ");
 	Serial.println(bluePW);
+
+	//Color detection end
 }
