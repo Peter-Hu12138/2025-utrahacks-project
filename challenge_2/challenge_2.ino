@@ -54,7 +54,7 @@ void loop()
     delay(50); // stop for a second to read the color properly
 
     getRGB(&colors);
-    int curr_color = getMinimum(colors.redPW, colors.bluePW, colors.greenPW)
+    int curr_color = getMinimum(colors.redPW, colors.bluePW, colors.greenPW);
     if (curr_color == 1)
     {
       // Turn left
@@ -72,11 +72,11 @@ void loop()
     else if (curr_color == 2)
     {
       // Turn right
-      while (feedbackDistance <= distance * 1.5 + 4 || millis() - turnStartTime <= normalTurnTime))
-        {
-          feedbackDistance = getDistanceCM();
-          turnRight();
-        }
+      while (feedbackDistance <= distance * 1.5 + 4 || millis() - turnStartTime <= normalTurnTime)
+      {
+        feedbackDistance = getDistanceCM();
+        turnRight();
+      }
       unsigned int temp = millis();
       while (millis() - temp <= endCleaningTurnTime)
       {
