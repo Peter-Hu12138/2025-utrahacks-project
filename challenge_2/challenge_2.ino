@@ -4,26 +4,31 @@
 #define SteerSpeed 50
 #define distanceThreshold 10
 #define normalTurnTime 1000
-#define UTurnTime 2*normalTurnTime
+#define UTurnTime 2 * normalTurnTime
 #define endCleaningTurnTime 100
 
-void moveForward(){
+void moveForward()
+{
   setMotors(moveSpeed, moveSpeed);
 }
 
-void moveBackward(){
+void moveBackward()
+{
   setMotors(-moveSpeed, -moveSpeed);
 }
 
-void turnLeft(){
+void turnLeft()
+{
   setMotors(SteerSpeed, -SteerSpeed); // might use tuning on the best speed
 }
 
-void turnRight(){
+void turnRight()
+{
   setMotors(-SteerSpeed, SteerSpeed);
 }
 
-void stopMotors(){
+void stopMotors()
+{
   setMotors(0, 0);
 }
 
@@ -39,60 +44,74 @@ void setup()
 void loop()
 {
   long distance = getDistanceCM();
-  
-  if (distance < distanceThreshold){ // close to a wall, take the instruction
+
+  if (distance < distanceThreshold)
+  {                                          // close to a wall, take the instruction
     long feedbackDistance = getDistanceCM(); // declared and intialize the latest distance var
-    turnStartTime = millis(); // restart the timer
+    turnStartTime = millis();                // restart the timer
     setMotors(0, 0);
     delay(50); // stop for a second to read the color properly
 
-    if (readBlue()){
+    if (readBlue())
+    {
       // Turn left
-      while (feedbackDistance <= distance * 1.5 + 4 || millis() - turnStartTime <= normalTurnTime) {
+      while (feedbackDistance <= distance * 1.5 + 4 || millis() - turnStartTime <= normalTurnTime)
+      {
         feedbackDistance = getDistanceCM();
         turnLeft();
       }
       unsigned int temp = millis();
-      while (millis() - temp <= endCleaningTurnTime){
+      while (millis() - temp <= endCleaningTurnTime)
+      {
         turnLeft();
       }
     }
-    else if (readGreen()) {
+    else if (readGreen())
+    {
       // Turn right
-      while (feedbackDistance <= distance * 1.5 + 4 || millis() - turnStartTime <= normalTurnTime)) {
-        feedbackDistance = getDistanceCM();
-        turnRight();
-      }
+      while (feedbackDistance <= distance * 1.5 + 4 || millis() - turnStartTime <= normalTurnTime))
+        {
+          feedbackDistance = getDistanceCM();
+          turnRight();
+        }
       unsigned int temp = millis();
-      while (millis() - temp <= endCleaningTurnTime){
+      while (millis() - temp <= endCleaningTurnTime)
+      {
         turnRight();
       }
     }
-    else if (readRed()) {
+    else if (readRed())
+    {
       // U-turn
-      while (millis() - turnStartTime <= UTurnTime) {
+      while (millis() - turnStartTime <= UTurnTime)
+      {
         feedbackDistance = getDistanceCM();
         turnRight();
       }
       unsigned int temp = millis();
-      while (millis() - temp <= endCleaningTurnTime){
+      while (millis() - temp <= endCleaningTurnTime)
+      {
         turnRight();
       }
     }
-    else if (readBlack()){
+    else if (readBlack())
+    {
       // go straight
-      while (millis() - turnStartTime <= 100) {
+      while (millis() - turnStartTime <= 100)
+      {
         feedbackDistance = getDistanceCM();
         turnRight();
       }
     }
-    else {
+    else
+    {
       // default
     }
     stopMotors();
     delay(50);
   }
-  else{
+  else
+  {
     moveForward();
   }
 }
