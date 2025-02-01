@@ -1,5 +1,5 @@
 #include "rgb.h"
-#include "hardware.h"
+#include "motor.h"
 
 RGBv rgbValue;
 
