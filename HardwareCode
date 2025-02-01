@@ -4,10 +4,10 @@ Servo myServo;
 // put your setup code here, to run once:
 //Motor Pins
 int EN_A = 11; //Enable pin for first motor
-int IN1 = 9; //control pin for first motor
-int IN2 = A2; //control pin for first motor
-int IN3 = A3; //control pin for second motor
-int IN4 = 6; //control pin for second motor
+int IN1 = A2; //control pin for first motor
+int IN2 = A3; //control pin for first motor
+int IN3 = A4; //control pin for second motor
+int IN4 = A5; //control pin for second motor
 int EN_B = 10; //Enable pin for second motor
 //Initializing variables to store data
 int motor_speed;
@@ -16,6 +16,8 @@ int x_pos;
 int y_pos;
 int servoDelay = 1000;
 
+// Ultrasoun 12, 13
+// Color Sensor 4-8
 
 void setup() {
   Serial.begin (9600); //Starting the serial communication at 9600 baud rate
@@ -28,7 +30,7 @@ void setup() {
   pinMode(EN_B, OUTPUT);
 
   // set Servo pin
-  myServo.attach(5);
+  myServo.attach(A1);
 }
 
 
