@@ -1,4 +1,5 @@
 #include "api.h"
+#include "rgb.h"
 
 #define moveSpeed 60
 #define SteerSpeed 50
@@ -33,6 +34,7 @@ void stopMotors()
 }
 
 unsigned long turnStartTime = 0;
+RGBv colors;
 
 void setup()
 {
@@ -44,7 +46,6 @@ void setup()
 void loop()
 {
   long distance = getDistanceCM();
-
   if (distance < distanceThreshold)
   {                                          // close to a wall, take the instruction
     long feedbackDistance = getDistanceCM(); // declared and intialize the latest distance var
@@ -52,7 +53,9 @@ void loop()
     setMotors(0, 0);
     delay(50); // stop for a second to read the color properly
 
-    if (readBlue())
+    getRGB(&colors);
+    int curr_color = getMinimum(colors.redPW, colors.bluePW, colors.greenPW)
+    if (curr_color == 1)
     {
       // Turn left
       while (feedbackDistance <= distance * 1.5 + 4 || millis() - turnStartTime <= normalTurnTime)
@@ -66,7 +69,7 @@ void loop()
         turnLeft();
       }
     }
-    else if (readGreen())
+    else if (curr_color == 2)
     {
       // Turn right
       while (feedbackDistance <= distance * 1.5 + 4 || millis() - turnStartTime <= normalTurnTime))
@@ -80,7 +83,7 @@ void loop()
         turnRight();
       }
     }
-    else if (readRed())
+    else if (curr_color == 0)
     {
       // U-turn
       while (millis() - turnStartTime <= UTurnTime)
@@ -94,7 +97,7 @@ void loop()
         turnRight();
       }
     }
-    else if (readBlack())
+    else if (curr_color == -1)
     {
       // go straight
       while (millis() - turnStartTime <= 100)

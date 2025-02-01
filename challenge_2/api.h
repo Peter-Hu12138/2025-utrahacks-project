@@ -33,3 +33,32 @@ float getServoAngle()
 {
     return 0.0; // TODO
 }
+
+int getRedPW()
+{
+    digitalWrite(S2, LOW);
+    digitalWrite(S3, LOW);
+
+    return pulseIn(sensorOut, LOW);
+}
+
+int getGreenPW()
+{
+    // Set sensor to read Green only
+    digitalWrite(S2, HIGH);
+    digitalWrite(S3, HIGH);
+    // Define integer to represent Pulse Width
+    int PW;
+    // Read the output Pulse Width
+    PW = pulseIn(sensorOut, LOW);
+    // Return the value
+    return PW;
+}
+
+int getBluePW()
+{
+    digitalWrite(S2, LOW);
+    digitalWrite(S3, HIGH);
+
+    return pulseIn(sensorOut, LOW);
+}
