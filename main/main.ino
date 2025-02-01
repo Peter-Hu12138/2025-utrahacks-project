@@ -1,9 +1,9 @@
 // Define color sensor pins
-#define S0 5
-#define S1 3
+#define S0 4
+#define S1 5
 #define S2 6
-#define S3 11
-#define sensorOut 10
+#define S3 7
+#define sensorOut 8
 
 // Variables for Color Pulse Width Measurements
 int redPW = 0;
