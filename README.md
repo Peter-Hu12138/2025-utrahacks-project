@@ -1,5 +1,5 @@
 # 2025-utrahacks-project
-As the title says
+As the title says whatever
 
 ## Members:
 TODO
