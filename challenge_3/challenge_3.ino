@@ -12,6 +12,14 @@ void setup()
   int redPW = 0;
   int greenPW = 0;
   int bluePW = 0;
+
+  //Variable for tracking what it detected before
+  int redEnable = 1; //Flag for red detection. Once it's zero, red will never be detected again. 1 by default.
+  int greenEnable = 0; //Flag for green detection. When it's 0, green will not be detected. Reverts to 1 when blue is detected. 0 by default.
+  int blueEnable = 0; //Flag for blue detection. When it's 0, blue will not be detected. Reverts to 1 when green is detected. 0 by default.
+  int state = 0; //State variable to keep track of the robot's position. 0 by default.
+
+
   pinMode(LED_BUILTIN, OUTPUT);  //Initialize LED_BUILTIN pin as an output
 
   //Echo pins
@@ -47,38 +55,8 @@ void blinkLED()
   delay(1000);                       // wait for a second
 }
 
-long detectDistance()
-{
-    long distance = getDistanceCM();
-
-    if (distance >= 200 || distance <= 0)
-    {
-      Serial.println("Out of range");
-    }
-    else
-    {
-      Serial.print(distance);
-      Serial.println(" cm");
-    }
-
-    delay(500);
-}
-
 void loop()
 {
-  //Sequence is R-G-B-G-B
-  //The last two colors cannot be the same block detected as before.
-  //Blink the LED when a color is detected.
-
-  //Expected route:
-  // 1. Go straight. R-B-R-G. First red is detected, ignore everything until green is detected.
-  // 2. Turn right. (G)-G-R-B. Ignore everything until detecting blue.
-  // 3. U-turn. (B)-R-G.
-  // 4. Turn left. Keep running until wall is detected.
-  // 5. Turn left again. Ignore everything until blue is detected. End.  
-
-
-
   //Color detection
     // Read Red Pulse Width
     redPW = getRedPW();
@@ -104,34 +82,99 @@ void loop()
     Serial.println(bluePW);
 	//Color detection end
 
-  //If statement to check the color
+  //Distance detection
+    long distance = getDistanceCM();
+
+    if (distance >= 200 || distance <= 0)
+    {
+      Serial.println("Out of range");
+    }
+    else
+    {
+      Serial.print(distance);
+      Serial.println(" cm");
+    }
+
+    delay(500);
+  //Distance detection end
+
+  //Sequence is R-G-B-G-B
+  //The last two colors cannot be the same block detected as before.
+  //Blink the LED when a color is detected.
+
+  //Expected route:
+  // 0. Go straight. R-B-R-G. First red is detected, ignore everything until green is detected.
+  // 1. Turn right. (G)-G-R-B. Ignore everything until detecting blue.
+  // 2. U-turn. (B)-R-G.
+  // 3. Turn left. Keep running until wall is detected.
+  // 4. Turn left again. Ignore everything until blue is detected. End.  
+
+  //State 0: Straight, detect red, keep running until green.
+  if state == 0;{
       // Check if Red is detected
       if (redPW > greenPW && redPW > bluePW)
       {
         Serial.println("Red Detected");
-        // Blink LED
-        // TODO
+        blinkLED();
+        redEnable = 0; //Red will never be detected again.
+        greenEnable = 1; //Green can now be detected. 
       }
-      // Check if Green is detected
-      else if (greenPW > redPW && greenPW > bluePW)
+  }
+
+  // Check if Green is detected.
+  else if state == 1;{
+      if (greenPW > redPW && greenPW > bluePW)
+        {
+          Serial.println("Green Detected");
+          blinkLED();
+          greenEnable = 0; //Green can no longer be detected.
+          blueEnable = 1; //Blue can now be detected.  
+          // TODO: Turn right 
+        }
+  }
+
+  //Check if Blue is detected.
+  else if state == 2;{
+      if (bluePW > redPW && bluePW > greenPW)
       {
-        Serial.println("Green Detected");
-        // Blink LED
-        // TODO
+          Serial.println("Blue Detected");
+          blinkLED();
+          greenEnable = 1; //Green can now be detected.
+          blueEnable = 0; //Blue can no longer be detected. 
+          //TODO: U-turn 
       }
-      // Check if Blue is detected
-      else if (bluePW > redPW && bluePW > greenPW)
+  }
+
+  // Check if Green is detected.
+  else if state == 3;{
+      if (greenPW > redPW && greenPW > bluePW)
+        {
+          Serial.println("Green Detected");
+          blinkLED();
+          greenEnable = 0; //Green can no longer be detected.
+          blueEnable = 1; //Blue can now be detected.  
+          // TODO: Turn left
+        }
+  }
+
+  // Check if wall is detected.
+  else if state == 4;{
+    //TODO: Turn left once detecting wall
+    //Don't change state until blue is detected.
+  }
+
+  //Check if Blue is detected.
+  else if state == 4;{
+      if (bluePW > redPW && bluePW > greenPW)
       {
-        Serial.println("Blue Detected");
-        // Blink LED
-        // TODO
+          Serial.println("Blue Detected");
+          blinkLED();
+          greenEnable = 1; //Green can now be detected.
+          blueEnable = 0; //Blue can no longer be detected. 
+          //TODO: U-turn 
       }
-      // No color detected
-      else
-      {
-        Serial.println("No Color Detected");
-      } 
-    //Color if statements end
+  }
+
 
 
 
