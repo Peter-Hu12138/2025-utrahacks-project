@@ -1,16 +1,15 @@
-// Define color sensor pins
-#define S0 4
-#define S1 5
-#define S2 6
-#define S3 7
-#define sensorOut 8
 #include "rgb.h"
+#include "hardware.h"
 
 RGBv rgbValue;
 
 // 0 is red, 1 is blue, 2 is green, 3 is black, the starting state
 int currentState = 3;
 int previousState = 3;
+int tempState = 3;
+
+// counter to check how far we've progressed in the circle
+int ringCounter = 5;
 
 // stores the original numbers for each color (default)
 int origRed = -1;
@@ -22,17 +21,28 @@ int enterCircleThreshold = 200;
 bool enteredCircle = false;
 
 void setup() {
+	//Initializing the color sensor pins as output
 	pinMode(S0, OUTPUT);
 	pinMode(S1, OUTPUT);
 	pinMode(S2, OUTPUT);
 	pinMode(S3, OUTPUT);
+
+	//Initializing the motor pins as output
+	pinMode(EN_A, OUTPUT);
+	pinMode(IN1, OUTPUT);
+	pinMode(IN2, OUTPUT);
+	pinMode(IN3, OUTPUT);
+	pinMode(IN4, OUTPUT);
+	pinMode(EN_B, OUTPUT);
+
+	myServo.attach(5);
 
 	digitalWrite(S0,HIGH);
 	digitalWrite(S1,LOW);
 
 	pinMode(sensorOut, INPUT);
 
-  getRGB(&rgbValue);
+	getRGB(&rgbValue);
 	if (origRed == -1 && origBlue == -1 && origGreen == -1) {
 		origRed = rgbValue.redPW;
 		origBlue = rgbValue.bluePW;
@@ -69,11 +79,24 @@ void loop() {
     continue;
 	}
 
-  delay(5000);
+  delay(2000);
 
 	// get current state (0 = red, 1 = blue, 2 = green, 3 = black)
 	getRGB(&rgbValue);
-	currentState = getMinimum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
+  tempState = getMinimum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
+
+  // logic for changing previousState and currentState
+  if (currentState != tempState) {
+    previousState = currentState;
+    currentState = tempState;
+    // if current state has changed, then we have progressed one ring
+    if (ringCounter >= 0) {
+      ringCounter--;
+    }
+  }
+
+  Serial.print("Ring Number = ");
+  Serial.println(ringCounter);
 
 	Serial.print("Red PW = ");
 	Serial.print(rgbValue.redPW);
@@ -95,9 +118,7 @@ void loop() {
 
 	Serial.print("Previous State = ");
 
-	if (previousState != currentState) {
-		previousState = currentState;
-		if (previousState == 0) {
+  if (previousState == 0) {
 		Serial.println("RED");
 		} else if (previousState == 1) {
 		Serial.println("BLUE");
@@ -105,8 +126,7 @@ void loop() {
 		Serial.println("GREEN");
 		} else {
 		Serial.println("BLACK");
-		}
-  }
+	}
 
   delay(100);
 
