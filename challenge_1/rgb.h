@@ -2,28 +2,24 @@
 
 typedef struct {
 	int redPW;
-  int bluePW;
-  int greenPW;
+  	int bluePW;
+  	int greenPW;
 } RGBv;
 
+// Structure for Color Pulse Width Measurements
 void getRGB(RGBv *rgb) {
-  // Read Red Pulse Width
+
 	rgb->redPW = getRedPW();
-	// Delay to stabilize sensor
 	delay(200);
 
-	// Read Green Pulse Width
 	rgb->greenPW = getGreenPW();
-	// Delay to stabilize sensor
 	delay(200);
 
-	// Read Blue Pulse Width
 	rgb->bluePW = getBluePW();
 
   delay(200);
-
 }
 
 int getDelta(RGBv *rgb,int origRed,int origBlue, int origGreen) {
-  return (abs(rgb.redPW - origRed) + abs(rgb.bluePW - origBlue) + abs(rgb.greenPW - origGreen));
-}+
+  return (abs(rgb->redPW - origRed) + abs(rgb->bluePW - origBlue) + abs(rgb->greenPW - origGreen));
+}
