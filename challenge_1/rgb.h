@@ -52,8 +52,11 @@ int getBluePW() {
 void getRGB(RGBv *rgb) {
 
   // Convert frequency to RGB values (mapping range may need calibration)
+  delay(25);
   rgb->redPW = map(getRedPW(), 100, 500, 255, 0);
+  delay(25);
   rgb->greenPW = map(getGreenPW(), 200, 600, 255, 0);
+  delay(25);
   rgb->bluePW = map(getBluePW(), 100, 500, 255, 0);
 
   // Clamp values to ensure they are in the range 0-255
@@ -85,7 +88,8 @@ int getMinimum(int red, int blue, int green) {
 int getMaximum(int red, int blue, int green) {
   //If all colours below certain threshold, assume black
   int blk_thres = 15;
-  if (red < blk_thres && green < blk_thres && blue < blk_thres) {
+  int wht_thres = 180;
+  if (((red < blk_thres) && (green < blk_thres) && (blue < blk_thres)) | ((red > blk_thres) && (green > blk_thres) && (blue > blk_thres))){
     return -1; //-1 represents black
   }
 

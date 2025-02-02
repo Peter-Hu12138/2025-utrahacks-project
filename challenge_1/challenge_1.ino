@@ -4,8 +4,8 @@
 
 RGBv rgbValue;
 
-int histlen = 10;
-int colhist[10] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+int histlen = 5;
+int colhist[5] = {-1, -1, -1, -1, -1};
 
 // States: 0 = red, 1 = blue, 2 = green, 3 = black (starting state)
 int currentState = -1;
@@ -15,11 +15,6 @@ int colavg = -1;
 // Counter to track progress through the rings
 int ringCounter = 5;
 
-// Original color reference values
-int origRed;
-int origBlue;
-int origGreen;
-
 // Threshold to detect entry into the circle
 int enterCircleThreshold = 200;
 bool enteredCircle = false;
@@ -27,8 +22,8 @@ bool enteredCircle = false;
 int rotationSpeedBonus = 5;
 int rotationSpeedIncrement = 5;
 
-int cruiseSpeed = 70;
-int rotateSpeed = 30;
+int cruiseSpeed = 80;
+int rotateSpeed = 100;
 
 void setup() {
     // Initialize color sensor pins
@@ -45,25 +40,27 @@ void setup() {
     pinMode(IN4, OUTPUT);
     pinMode(EN_B, OUTPUT);
 
-    myServo.attach(5);
+    myServo.attach(A1);
 
     digitalWrite(S0, HIGH);
     digitalWrite(S1, LOW);
 
     pinMode(sensorOut, INPUT);
     delay(50); // stop for a second to read the color properly
-    getRGB(&rgbValue);
-	origRed = rgbValue.redPW;
-	origBlue = rgbValue.bluePW;
-	origGreen = rgbValue.greenPW;
     Serial.begin(9600);
+
+    grab();
+
+    setMotors(60, 30);
+
+
 }
 
 void loop() {
     // Spiral search to enter the circle
     while (!enteredCircle) {
-        setMotors(60, 30 + rotationSpeedBonus);
-        rotationSpeedBonus = min(50, rotationSpeedBonus + rotationSpeedIncrement);
+        setMotors(60, rotationSpeedBonus);
+        rotationSpeedBonus = rotationSpeedBonus + 5;
 
         delay(5); // stop for a second to read the color properly
         getRGB(&rgbValue);
@@ -85,7 +82,6 @@ void loop() {
     int col = getMaximum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
     addnew(colhist, col, histlen); //Add new colour measurement to colour history
     int colavg = colouraverage(colhist, histlen); //Get the average colour of the last 5 measurements
-    Serial.print(colavg);
     // for(int i=0; i<histlen; i++){
     //   Serial.println(colhist[i]);
     // }
@@ -93,25 +89,29 @@ void loop() {
     // Cruise mode
     setMotors(cruiseSpeed, cruiseSpeed);
     // Correct if accidentally steps out
+    Serial.println(colavg);
+    Serial.println(previousState);
     if (colavg == previousState) {
         setMotors(0, 0); // Stop
-        delay(500);
+        delay(50);
         setMotors(rotateSpeed, 0); // Rotate in place
-
-        while (colavg == previousState) {
-        delay(5); // stop for a second to read the color properly
         getRGB(&rgbValue);
-  		  	colavg = getMaximum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
+        int col = getMaximum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
+        addnew(colhist, col, histlen); //Add new colour measurement to colour history
+        int colavg = colouraverage(colhist, histlen); //Get the average colour of the last 5 measurements
+        Serial.println(colavg);
+        Serial.println(previousState);
+        if(colavg != previousState){
+          delay(500); // Delay to let it face inwards instead of tangential 
+          setMotors(0, 0); // Stop once corrected
         }
-        delay(50); // Delay to let it face inwards instead of tangential 
-        setMotors(0, 0); // Stop once corrected
     }
 
 	// If the robot moves in as desired, keep moving straight, decrement counter, update previous state
 	if (colavg != previousState && colavg != currentState){
 		ringCounter = max(0, ringCounter - 1);
-    Serial.print("Entered ring ");
-    Serial.println(ringCounter);
+        Serial.print("Entered ring ");
+        Serial.println(ringCounter);
 		previousState = currentState;
 	}
 
@@ -123,7 +123,8 @@ void loop() {
 		setMotors(0, 0); // Stop
 		delay(500);
 		//Write code to back up a bit, later.
-		release(60); //Release flag; ANGLE TBD
+		release(90); //Release flag; ANGLE TBD
+    delay(10);
 		setMotors(0, 0);
     return;
 	}
