@@ -13,14 +13,6 @@
 #define EN_A 11
 #define EN_B 10
 
-// Define color sensor pins
-#define S0 4
-#define S1 5
-#define S2 6
-#define S3 7
-#define sensorOut 8
-#include "rgb.h"
-
 float getColor()
 {
     return 0.0; // TODO should be changed

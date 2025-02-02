@@ -1,9 +1,6 @@
-#define IN1 2
-#define IN2 3
-#define IN3 4
-#define IN4 5
-#define EN_A 9
-#define EN_B 10
+#include "api.h"
+#include "hardware.h"
+
 
 void setup() {
     pinMode(IN1, OUTPUT);
@@ -16,14 +13,14 @@ void setup() {
 
 void loop() {
     // Example: Move forward with left motor at full speed, right motor at half speed (differential drive)
-    drive(255, "FWD", 128, "FWD");
+    setMotors(255, 128);
     delay(2000);
 
     // Example: Turn in place (left motor forward, right motor reverse)
-    drive(255, "FWD", 255, "REV");
+    setMotors(255, -255);
     delay(2000);
 
     // Stop
-    stop();
+    setMotors();
     delay(1000);
 }
