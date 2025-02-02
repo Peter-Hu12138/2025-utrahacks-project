@@ -51,16 +51,21 @@ int getBluePW() {
 // Structure for Color Pulse Width Measurements
 void getRGB(RGBv *rgb) {
 
-	rgb->redPW = getRedPW();
-	delay(200);
+  // Convert frequency to RGB values (mapping range may need calibration)
+  rgb->redPW = map(getRedPW(), 100, 500, 255, 0);
+  rgb->greenPW = map(getGreenPW(), 200, 600, 255, 0);
+  rgb->bluePW = map(getBluePW(), 100, 500, 255, 0);
 
-	rgb->greenPW = getGreenPW();
-	delay(200);
+  // Clamp values to ensure they are in the range 0-255
+  rgb->redPW = constrain(rgb->redPW , 0, 255);
+  rgb->greenPW = constrain(rgb->greenPW+50, 0, 255);
+  rgb->bluePW = constrain(rgb->bluePW, 0, 255);
 
-	rgb->bluePW = getBluePW();
-
-  delay(200);
+  Serial.print("R: "); Serial.print(rgb->redPW);
+  Serial.print(" G: "); Serial.print(rgb->greenPW);
+  Serial.print(" B: "); Serial.println(rgb->bluePW);
 }
+
 
 int getDelta(RGBv *rgb,int origRed,int origBlue, int origGreen) {
   return (abs(rgb->redPW - origRed) + abs(rgb->bluePW - origBlue) + abs(rgb->greenPW - origGreen));
@@ -76,3 +81,21 @@ int getMinimum(int red, int blue, int green) {
     return 2;
   }
 }
+
+int getMaximum(int red, int blue, int green) {
+  //If all colours below certain threshold, assume black
+  int blk_thres = 15;
+  if (red < blk_thres && green < blk_thres && blue < blk_thres) {
+    return -1; //-1 represents black
+  }
+
+  // get current state based on which color value is the lowest
+  if (max(red, blue) == red && max(red, green) == red) {
+    return 0;
+  } else if (max(blue, red) == blue && max(blue, green) == blue) {
+    return 1;
+  } else {
+    return 2;
+  }
+}
+
