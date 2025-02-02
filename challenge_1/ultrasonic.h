@@ -16,6 +16,6 @@ float getDistanceCM() // CM
     digitalWrite(trigPin, LOW);
 
     long duration = pulseIn(echoPin, HIGH);
-    long distance = (duration / 2) / 29.1; // Convert to centimeters
+    float distance = (duration / 2) / 29.1; // Convert to centimeters
     return distance;
 }
