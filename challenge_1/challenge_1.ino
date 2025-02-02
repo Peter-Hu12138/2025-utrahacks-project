@@ -81,7 +81,7 @@ void loop() {
     previousState = currentState;
     currentState = tempState;
     // if current state has changed, then we have progressed one ring
-    if (ringCounter >= 0) {
+    if (ringCounter > 0) {
       ringCounter--;
     }
   }
