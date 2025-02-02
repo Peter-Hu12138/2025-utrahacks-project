@@ -20,6 +20,12 @@ int origGreen = -1;
 int enterCircleThreshold = 200;
 bool enteredCircle = false;
 
+int rotationSpeedBonus = 5;
+int rotationSpeedIncrement = 5;'
+
+int cruiseSpeed = 100;
+int rotateSpeed = 70;
+
 void setup() {
 	//Initializing the color sensor pins as output
 	pinMode(S0, OUTPUT);
@@ -52,82 +58,75 @@ void setup() {
 	Serial.begin(9600);
 }
 
-void loop() {
 
+
+void updateliveReading() {
+	// get current state (0 = red, 1 = blue, 2 = green, 3 = black)
+	getRGB(&rgbValue);
+	liveReading = getMinimum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW); //Live reading
+	}
+
+void boundaryCheck(){
+	//If boundary is reached (we dont know which one)
+	if (currentState != liveReading) {
+		//If the robot accidentally moved outwards
+		if (liveReading == previousState){
+			//Stop, rotate until sensor sees the right color again before resuming
+			}
+
+		//If the robot approached inwards
+		else{
+
+		}
+	// if current state has changed, then we have progressed one ring
+	if (ringCounter >= 0) {
+		ringCounter--;
+	}
+	}
+}
+
+void loop() {
+	//While outside of the circle, rotate in a spiral of increasing radius
 	while (!enteredCircle) {
+		setMotors(255, 90+rotationSpeedBonus);
+		if (rotationSpeedBonus + rotationSpeedIncrement < 200) {
+			rotationSpeedBonus += rotationSpeedIncrement;
+		}
+
 		getRGB(&rgbValue);
 		int delta = getDelta(&rgbValue, origRed, origBlue, origGreen);
 		if (delta > enterCircleThreshold) {
 		enteredCircle = true;
     Serial.println("Entered Circle");
 		}
-    Serial.println("Current State = BLACK");
-    Serial.print("Red PW = ");
-    Serial.print(origRed);
-    Serial.print(" - Green PW = ");
-    Serial.print(origGreen);
-    Serial.print(" - Blue PW = ");
-    Serial.println(origBlue);
 
-    Serial.println("Current State = BLACK");
-    Serial.print("Red PW = ");
-    Serial.print(rgbValue.redPW);
-    Serial.print(" - Green PW = ");
-    Serial.print(rgbValue.greenPW);
-    Serial.print(" - Blue PW = ");
-    Serial.println(rgbValue.bluePW);
-    continue;
+		delay(500);
+		continue;
 	}
 
-  delay(2000);
+	updateColourStates();
 
-	// get current state (0 = red, 1 = blue, 2 = green, 3 = black)
-	getRGB(&rgbValue);
-  tempState = getMinimum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
 
-  // logic for changing previousState and currentState
-  if (currentState != tempState) {
-    previousState = currentState;
-    currentState = tempState;
-    // if current state has changed, then we have progressed one ring
-    if (ringCounter >= 0) {
-      ringCounter--;
-    }
-  }
 
-  Serial.print("Ring Number = ");
-  Serial.println(ringCounter);
+	//Write search mode behavior here
 
-	Serial.print("Red PW = ");
-	Serial.print(rgbValue.redPW);
-	Serial.print(" - Green PW = ");
-	Serial.print(rgbValue.greenPW);
-	Serial.print(" - Blue PW = ");
-	Serial.println(rgbValue.bluePW);
+	//Cruise mode behavior
+	setMotors(cruiseSpeed, cruiseSpeed);
 
-	Serial.print("Current State = ");
-	if (currentState == 0) {
-		Serial.println("RED");
-	} else if (currentState == 1) {
-		Serial.println("BLUE");
-	} else if (currentState == 2) {
-		Serial.println("GREEN");
-	} else {
-		Serial.println("BLACK");
+	//When it accidentally steps out
+	if (currentState == previousState) { 
+		setMotors(0,0); //Stop before we stray further
+		delay(500);
+		setMotors(rotateSpeed,0); //Rotate on site
+		while {
+			updateColourStates();
+			if (currentState != previousState) {
+				setMotors(0,0);
+				break;
+			}
+		}
 	}
 
-	Serial.print("Previous State = ");
 
-  if (previousState == 0) {
-		Serial.println("RED");
-		} else if (previousState == 1) {
-		Serial.println("BLUE");
-		} else if (previousState == 2) {
-		Serial.println("GREEN");
-		} else {
-		Serial.println("BLACK");
-	}
-
-  delay(100);
-
+	delay(50);
 }
