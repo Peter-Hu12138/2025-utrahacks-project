@@ -8,8 +8,8 @@
 #define EN_A 11
 #define EN_B 10
 
-Servo myServo;
-int servoDelay = 1000;
+// Servo myServo;
+// int servoDelay = 1000;
 // Motor pins, as variables (deprecrated)
 // int EN_A = 11; //Enable pin for first motor
 // int IN1 = A2; //control pin for first motor
@@ -30,7 +30,7 @@ void motorSetup() {
   pinMode(EN_B, OUTPUT);
 
   // set Servo pin
-  myServo.attach(A1);
+  // myServo.attach(A1);
 }
 
 // Drive motors
@@ -59,15 +59,15 @@ void stop() {
     move_one(0, "REV", IN3, IN4, EN_B);
 }
 
-//Servo Motor
-void grab(){
-  myServo.write(90);
-  Serial.println("grab");
-  delay(servoDelay);
-}
+// //Servo Motor
+// void grab(){
+//   myServo.write(90);
+//   Serial.println("grab");
+//   delay(servoDelay);
+// }
 
-void release(int degree){
-  myServo.write(90-degree);
-  Serial.println("release");
-  delay(servoDelay);
-}
+// void release(int degree){
+//   myServo.write(90-degree);
+//   Serial.println("release");
+//   delay(servoDelay);
+// }

@@ -1,7 +1,7 @@
 #include "api.h"
 
-#define moveSpeed 60
-#define SteerSpeed 50
+#define moveSpeed 70
+#define SteerSpeed 70
 #define distanceThreshold 10
 #define normalTurnTime 1000
 #define UTurnTime 2 * normalTurnTime
@@ -50,13 +50,18 @@ void loop()
   Serial.println(distance);
   if (distance < distanceThreshold)
   {                                          // close to a wall, take the instruction
-    long feedbackDistance = getDistanceCM(); // declared and intialize the latest distance var
+    float feedbackDistance = getDistanceCM(); // declared and intialize the latest distance var
     turnStartTime = millis();                // restart the timer
     setMotors(0, 0);
     delay(50); // stop for a second to read the color properly
 
     getRGB(&colors);
-    
+    Serial.print("Red PW = ");
+	Serial.print(colors.redPW);
+	Serial.print(" - Green PW = ");
+	Serial.print(colors.greenPW);
+	Serial.print(" - Blue PW = ");
+	Serial.println(colors.bluePW);
     int curr_color = getMinimum(colors.redPW, colors.bluePW, colors.greenPW);
     Serial.print("Color: ");
     Serial.println(curr_color);

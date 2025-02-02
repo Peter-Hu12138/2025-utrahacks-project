@@ -56,14 +56,14 @@ void getRGB(RGBv *rgb)
 {
 
   rgb->redPW = getRedPW();
-  delay(200);
+  delay(100);
 
   rgb->greenPW = getGreenPW();
-  delay(200);
+  delay(100);
 
   rgb->bluePW = getBluePW();
 
-  delay(200);
+  delay(100);
 }
 
 int getDelta(RGBv *rgb, int origRed, int origBlue, int origGreen)
@@ -73,7 +73,9 @@ int getDelta(RGBv *rgb, int origRed, int origBlue, int origGreen)
 
 int getMinimum(int red, int blue, int green)
 {
-  // get current state based on which color value is the lowest
+  if (red >= 120 && blue >= 120 && green >= 120) {
+    return -1;
+  } // get current state based on which color value is the lowest
   if (min(red, blue) == red && min(red, green) == red)
   {
     return 0;
