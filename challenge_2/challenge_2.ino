@@ -1,5 +1,4 @@
 #include "api.h"
-#include "rgb.h"
 
 #define moveSpeed 60
 #define SteerSpeed 50
@@ -39,13 +38,16 @@ RGBv colors;
 void setup()
 {
   Serial.begin(9600);
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+  ultrasonicSetup();
+  motorSetup();
+  colorSensorSetup();
 }
 
 void loop()
 {
-  long distance = getDistanceCM();
+  float distance = getDistanceCM();
+  Serial.print("Distance: ");
+  Serial.println(distance);
   if (distance < distanceThreshold)
   {                                          // close to a wall, take the instruction
     long feedbackDistance = getDistanceCM(); // declared and intialize the latest distance var
@@ -54,7 +56,10 @@ void loop()
     delay(50); // stop for a second to read the color properly
 
     getRGB(&colors);
+    
     int curr_color = getMinimum(colors.redPW, colors.bluePW, colors.greenPW);
+    Serial.print("Color: ");
+    Serial.println(curr_color);
     if (curr_color == 1)
     {
       // Turn left
