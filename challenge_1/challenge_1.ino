@@ -4,9 +4,9 @@
 RGBv rgbValue;
 
 // States: 0 = red, 1 = blue, 2 = green, 3 = black (starting state)
-int currentState = 3;
-int previousState = 3;
-int liveReading = 3;
+int currentState = -1;
+int previousState = -1;
+int liveReading = -1;
 
 // Counter to track progress through the rings
 int ringCounter = 5;
@@ -58,22 +58,23 @@ void setup() {
 void loop() {
     // Spiral search to enter the circle
     while (!enteredCircle) {
-        setMotors(255, 90 + rotationSpeedBonus);
-        rotationSpeedBonus = min(200, rotationSpeedBonus + rotationSpeedIncrement);
+        setMotors(160, 60 + rotationSpeedBonus);
+        rotationSpeedBonus = min(180, rotationSpeedBonus + rotationSpeedIncrement);
 
         getRGB(&rgbValue);
-        int delta = getDelta(&rgbValue, origRed, origBlue, origGreen);
-        if (delta > enterCircleThreshold) {
+        int col = getMaximum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
+        delay(500);
+        if (col != -1) {
             enteredCircle = true;
             Serial.println("Entered Circle");
-			setMotors(0, 0); // Stop
-        	delay(500);
+            setMotors(0, 0); // Stop
+            delay(500);
         }
     }
 
 	// Get the live reading
     getRGB(&rgbValue);
-    liveReading = getMinimum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
+    liveReading = getMaximum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
 
     // Cruise mode
     setMotors(cruiseSpeed, cruiseSpeed);
@@ -85,8 +86,8 @@ void loop() {
         setMotors(rotateSpeed, 0); // Rotate in place
 
         while (liveReading == previousState) {
-			getRGB(&rgbValue);
-  		  	liveReading = getMinimum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
+        getRGB(&rgbValue);
+  		  	liveReading = getMaximum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
         }
         delay(50); // Delay to let it face inwards instead of tangential 
 		setMotors(0, 0); // Stop once corrected
@@ -106,7 +107,8 @@ void loop() {
 		setMotors(0, 0); // Stop
 		delay(500);
 		//Write code to back up a bit, later.
-		release(); //Release flag
-		break;
+		release(60); //Release flag; ANGLE TBD
+		setMotors(0, 0);
 	}
+  delay(10);
 }

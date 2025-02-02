@@ -9,14 +9,6 @@
 #define EN_B 10
 #define SERVO A1
 
-// Motor pins, as variables (deprecrated)
-// int EN_A = 11; //Enable pin for first motor
-// int IN1 = A2; //control pin for first motor
-// int IN2 = A3; //control pin for first motor
-// int IN3 = A4; //control pin for second motor
-// int IN4 = A5; //control pin for second motor
-// int EN_B = 10; //Enable pin for second motor
-
 Servo myServo;
 int servoDelay = 1000;
 
