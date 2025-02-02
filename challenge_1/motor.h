@@ -19,7 +19,7 @@ int servoDelay = 1000;
 // Ultrasoun 12, 13
 // Color Sensor 4-8
 
-void setup() {
+void motorSetup() {
   Serial.begin (9600); //Starting the serial communication at 9600 baud rate
   //Initializing the motor pins as output
   pinMode(EN_A, OUTPUT);
@@ -32,23 +32,6 @@ void setup() {
   // set Servo pin
   myServo.attach(A1);
 }
-
-
-void loop() {
-
-  digitalWrite(IN1, LOW);
-  digitalWrite(IN2, HIGH);
-  analogWrite(EN_A, 90);
-  Serial.println("Wheel A");
-
-  digitalWrite(IN3, HIGH);
-  digitalWrite(IN4, LOW);
-  analogWrite(EN_B, 90);
-  Serial.println("Wheel B");
-
-  //servo
-  release(90);
-  grab();
 
 void grab(){
   myServo.write(90);

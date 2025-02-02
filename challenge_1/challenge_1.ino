@@ -1,7 +1,6 @@
-#include "rgb.h"
-#include "motor.h"
+#include "api.h"
 
-RGBv rgbValue;
+RGB rgbValue;
 
 // 0 is red, 1 is blue, 2 is green, 3 is black, the starting state
 int currentState = 3;
@@ -20,26 +19,18 @@ int origGreen = -1;
 int enterCircleThreshold = 200;
 bool enteredCircle = false;
 
+int leftWheelRPM = 0;
+
 void setup() {
+	motorSetup();
+
 	//Initializing the color sensor pins as output
 	pinMode(S0, OUTPUT);
 	pinMode(S1, OUTPUT);
 	pinMode(S2, OUTPUT);
 	pinMode(S3, OUTPUT);
-
-	//Initializing the motor pins as output
-	pinMode(EN_A, OUTPUT);
-	pinMode(IN1, OUTPUT);
-	pinMode(IN2, OUTPUT);
-	pinMode(IN3, OUTPUT);
-	pinMode(IN4, OUTPUT);
-	pinMode(EN_B, OUTPUT);
-
-	myServo.attach(5);
-
 	digitalWrite(S0,HIGH);
 	digitalWrite(S1,LOW);
-
 	pinMode(sensorOut, INPUT);
 
 	getRGB(&rgbValue);
@@ -58,25 +49,25 @@ void loop() {
 		getRGB(&rgbValue);
 		int delta = getDelta(&rgbValue, origRed, origBlue, origGreen);
 		if (delta > enterCircleThreshold) {
-		enteredCircle = true;
-    Serial.println("Entered Circle");
+			enteredCircle = true;
+			Serial.println("Entered Circle");
 		}
-    Serial.println("Current State = BLACK");
-    Serial.print("Red PW = ");
-    Serial.print(origRed);
-    Serial.print(" - Green PW = ");
-    Serial.print(origGreen);
-    Serial.print(" - Blue PW = ");
-    Serial.println(origBlue);
+		Serial.println("Current State = BLACK");
+		Serial.print("Red PW = ");
+		Serial.print(origRed);
+		Serial.print(" - Green PW = ");
+		Serial.print(origGreen);
+		Serial.print(" - Blue PW = ");
+		Serial.println(origBlue);
 
-    Serial.println("Current State = BLACK");
-    Serial.print("Red PW = ");
-    Serial.print(rgbValue.redPW);
-    Serial.print(" - Green PW = ");
-    Serial.print(rgbValue.greenPW);
-    Serial.print(" - Blue PW = ");
-    Serial.println(rgbValue.bluePW);
-    continue;
+		Serial.println("Current State = BLACK");
+		Serial.print("Red PW = ");
+		Serial.print(rgbValue.redPW);
+		Serial.print(" - Green PW = ");
+		Serial.print(rgbValue.greenPW);
+		Serial.print(" - Blue PW = ");
+		Serial.println(rgbValue.bluePW);
+		continue;
 	}
 
   delay(2000);
