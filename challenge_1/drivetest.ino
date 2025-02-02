@@ -2,12 +2,9 @@
 
 
 void setup() {
-    pinMode(IN1, OUTPUT);
-    pinMode(IN2, OUTPUT);
-    pinMode(IN3, OUTPUT);
-    pinMode(IN4, OUTPUT);
-    pinMode(EN_A, OUTPUT);
-    pinMode(EN_B, OUTPUT);
+  motorSetup();
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
 }
 
 void loop() {
@@ -20,6 +17,22 @@ void loop() {
     delay(2000);
 
     // Stop
-    setMotors();
+    stop();
     delay(1000);
+
+
+    // ultrasonic testing:
+    Serial.print("Distance:");
+    Serial.println(getDistanceCM());
+
+    // color detection:
+    RGBv rgbValue;
+    getRGB(&rgbValue);
+    Serial.print("Red PW = ");
+	Serial.print(rgbValue.redPW);
+	Serial.print(" - Green PW = ");
+	Serial.print(rgbValue.greenPW);
+	Serial.print(" - Blue PW = ");
+	Serial.println(rgbValue.bluePW);
+
 }

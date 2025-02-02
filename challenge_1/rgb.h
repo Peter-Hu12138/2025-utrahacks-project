@@ -1,6 +1,3 @@
-
-#include "api.h"
-
 // Define color sensor pins
 #define S0 4
 #define S1 5
@@ -13,6 +10,29 @@ typedef struct {
   	int bluePW;
   	int greenPW;
 } RGBv;
+
+int getRedPW() {
+	digitalWrite(S2,LOW);
+	digitalWrite(S3,LOW);
+
+	return pulseIn(sensorOut, LOW);
+}
+
+int getGreenPW() {
+	digitalWrite(S2,HIGH);
+	digitalWrite(S3,HIGH);
+	
+	return pulseIn(sensorOut, LOW);
+}
+
+int getBluePW() {
+	digitalWrite(S2,LOW);
+	digitalWrite(S3,HIGH);
+
+	return pulseIn(sensorOut, LOW);
+}
+
+
 
 // Structure for Color Pulse Width Measurements
 void getRGB(RGBv *rgb) {
