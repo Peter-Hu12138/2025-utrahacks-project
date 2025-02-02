@@ -1,4 +1,5 @@
 // Define color sensor pins
+#define OE_PIN 3
 #define S0 4
 #define S1 5
 #define S2 6
@@ -10,6 +11,19 @@ typedef struct {
   	int bluePW;
   	int greenPW;
 } RGBv;
+
+void colorSensorSetup(){
+  pinMode(S0, OUTPUT);
+	pinMode(S1, OUTPUT);
+	pinMode(S2, OUTPUT);
+	pinMode(S3, OUTPUT);
+  pinMode(sensorOut, INPUT);
+  pinMode(OE_PIN, OUTPUT);
+
+  digitalWrite(OE_PIN, LOW);
+  digitalWrite(S0, HIGH);
+  digitalWrite(S1, LOW);
+}
 
 int getRedPW() {
 	digitalWrite(S2,LOW);
