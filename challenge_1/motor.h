@@ -7,9 +7,8 @@
 #define IN4 A5
 #define EN_A 11
 #define EN_B 10
+#define SERVO A1
 
-Servo myServo;
-int servoDelay = 1000;
 // Motor pins, as variables (deprecrated)
 // int EN_A = 11; //Enable pin for first motor
 // int IN1 = A2; //control pin for first motor
@@ -18,6 +17,8 @@ int servoDelay = 1000;
 // int IN4 = A5; //control pin for second motor
 // int EN_B = 10; //Enable pin for second motor
 
+Servo myServo;
+int servoDelay = 1000;
 
 void motorSetup() {
   Serial.begin (9600); //Starting the serial communication at 9600 baud rate
@@ -30,7 +31,7 @@ void motorSetup() {
   pinMode(EN_B, OUTPUT);
 
   // set Servo pin
-  myServo.attach(A1);
+  myServo.attach(SERVO);
 }
 
 // Drive motors

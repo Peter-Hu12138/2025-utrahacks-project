@@ -1,38 +1,32 @@
 #include "api.h"
 
-
+RGBv rgbValue;
 void setup() {
+  colorSensorSetup();
   motorSetup();
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+  ultrasonicSetup();
+  myServo.write(0);
+  setMotors(100, 100);
 }
 
 void loop() {
-    // Example: Move forward with left motor at full speed, right motor at half speed (differential drive)
-    setMotors(255, 128);
-    delay(2000);
-
-    // Example: Turn in place (left motor forward, right motor reverse)
-    setMotors(255, -255);
-    delay(2000);
-
-    // Stop
-    stop();
-    delay(1000);
 
 
     // ultrasonic testing:
+    float distance = getDistanceCM();
     Serial.print("Distance:");
-    Serial.println(getDistanceCM());
+    Serial.println(distance);
 
     // color detection:
-    RGBv rgbValue;
-    getRGB(&rgbValue);
-    Serial.print("Red PW = ");
-	Serial.print(rgbValue.redPW);
-	Serial.print(" - Green PW = ");
-	Serial.print(rgbValue.greenPW);
-	Serial.print(" - Blue PW = ");
-	Serial.println(rgbValue.bluePW);
+    grab();
 
+    getRGB(&rgbValue);
+     Serial.print("Red PW = ");
+     Serial.print(rgbValue.redPW);
+     Serial.print(" - Green PW = ");
+     Serial.print(rgbValue.greenPW);
+     Serial.print(" - Blue PW = ");
+     Serial.println(rgbValue.bluePW);
+    delay(500);
+    release(60);
 }
