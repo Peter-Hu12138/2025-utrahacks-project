@@ -17,7 +17,7 @@ Software: An Arduino C++ control system that processes sensor inputs and makes r
 Navigation Algorithm: A combination of line-following logic, color recognition, and decision trees to ensure the rover can efficiently traverse a maze and interact with objects.
 Communication: Wireless connectivity for remote monitoring and potential manual overrides.
 Challenges we ran into
-Building Color Rover came with its share of challenges:
+Building Color Me Buggy came with its share of challenges:
 
 Color Recognition Accuracy: Lighting conditions affected sensor readings, requiring calibration for reliable color detection.
 Maze Navigation Logic: Ensuring the rover could adjust dynamically to obstacles while staying on track was a significant coding challenge.
@@ -36,11 +36,11 @@ How to refine real-time navigation algorithms for dynamic obstacle avoidance.
 The iterative nature of designing and testing hardware mechanisms.
 Effective teamwork and problem-solving skills during the hackathon under time constraints.
 
-## What's next for Color Rover
+## What's next
 Sensor Fusion for Localization: combination of RPM sensor, ultrasonic and color sensor data to achieve precise navigation through awareness of distance travelled.
 Advanced AI Navigation: Implementing machine learning to improve maze-solving efficiency.
 Enhanced Flag Interaction: Adding object recognition to distinguish between different types of flags.
 Multi-Rover Coordination: Enabling multiple rovers to work together in a competitive or cooperative setting.
 Open-Source Expansion: Sharing our code and designs with the robotics community for educational and experimental use.
 Larger-Scale Applications: Exploring real-world use cases, such as warehouse automation and search-and-rescue simulations.
-Color Rover is just the beginning—we're excited to see where it goes next!
+Color Me Buggy is just the beginning—we're excited to see where it goes next!
