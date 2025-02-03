@@ -1,4 +1,5 @@
 #include "api.h"
+#include "slidingwindow.h"
 
 #define moveSpeed 60
 #define SteerSpeed 50
@@ -6,6 +7,10 @@
 #define normalTurnTime 1000
 #define UTurnTime 2 * normalTurnTime
 #define endCleaningTurnTime 100
+
+RGBv colours;
+int histlen = 5;
+int colhist[5] = {-1, -1, -1, -1, -1};
 
 void moveForward()
 {
@@ -33,7 +38,6 @@ void stopMotors()
 }
 
 unsigned long turnStartTime = 0;
-RGBv colors;
 
 void setup()
 {
@@ -53,11 +57,10 @@ void loop()
     long feedbackDistance = getDistanceCM(); // declared and intialize the latest distance var
     turnStartTime = millis();                // restart the timer
     setMotors(0, 0);
-    delay(50); // stop for a second to read the color properly
-
-    getRGB(&colors);
-    
-    int curr_color = getMinimum(colors.redPW, colors.bluePW, colors.greenPW);
+    getRGB(&rgbValue);
+    int col = getMaximum(rgbValue.redPW, rgbValue.bluePW, rgbValue.greenPW);
+    addnew(colhist, col, histlen); //Add new colour measurement to colour history
+    int colavg = colouraverage(colhist, histlen); //Get the average colour of the last 5 measurements
     Serial.print("Color: ");
     Serial.println(curr_color);
     if (curr_color == 1)

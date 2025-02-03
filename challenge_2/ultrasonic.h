@@ -2,7 +2,7 @@
 #define echoPin 12
 
 void ultrasonicSetup() {
-    pinMode(trigPin, OUTPUT);
+  pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
 }
 

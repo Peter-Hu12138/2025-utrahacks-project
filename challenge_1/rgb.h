@@ -61,7 +61,7 @@ void getRGB(RGBv *rgb) {
 
   // Clamp values to ensure they are in the range 0-255
   rgb->redPW = constrain(rgb->redPW , 0, 255);
-  rgb->greenPW = constrain(rgb->greenPW+50, 0, 255);
+  rgb->greenPW = constrain(rgb->greenPW, 0, 255);
   rgb->bluePW = constrain(rgb->bluePW, 0, 255);
 
   Serial.print("R: "); Serial.print(rgb->redPW);

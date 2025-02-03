@@ -13,13 +13,13 @@ int previousState = -1;
 int colavg = -1;
 
 // Counter to track progress through the rings
-int ringCounter = 5;
+int ringCounter = 3;
 
 // Threshold to detect entry into the circle
 int enterCircleThreshold = 200;
 bool enteredCircle = false;
 
-int rotationSpeedBonus = 5;
+int rotationSpeedBonus = 10;
 int rotationSpeedIncrement = 5;
 
 int cruiseSpeed = 80;
@@ -59,7 +59,7 @@ void setup() {
 void loop() {
     // Spiral search to enter the circle
     while (!enteredCircle) {
-        setMotors(60, rotationSpeedBonus);
+        setMotors(120, 20+ rotationSpeedBonus);
         rotationSpeedBonus = rotationSpeedBonus + 5;
 
         delay(5); // stop for a second to read the color properly
@@ -86,11 +86,16 @@ void loop() {
     //   Serial.println(colhist[i]);
     // }
 
-    // Cruise mode
-    setMotors(cruiseSpeed, cruiseSpeed);
+    
     // Correct if accidentally steps out
     Serial.println(colavg);
+    Serial.println(currentState);
     Serial.println(previousState);
+    if (colavg == currentState){
+      // Cruise mode
+    
+    setMotors(cruiseSpeed, cruiseSpeed);
+    }
     if (colavg == previousState) {
         setMotors(0, 0); // Stop
         delay(50);
@@ -102,7 +107,7 @@ void loop() {
         Serial.println(colavg);
         Serial.println(previousState);
         if(colavg != previousState){
-          delay(500); // Delay to let it face inwards instead of tangential 
+          delay(300); // Delay to let it face inwards instead of tangential 
           setMotors(0, 0); // Stop once corrected
         }
     }
@@ -113,10 +118,11 @@ void loop() {
         Serial.print("Entered ring ");
         Serial.println(ringCounter);
 		previousState = currentState;
+    // Update the current state (happens every loop regardless of what happens)
+	  currentState = colavg;
 	}
 
-	// Update the current state (happens every loop regardless of what happens)
-	currentState = colavg;
+	
 
 	// Check if the robot has completed the circle
 	if (ringCounter == 0) {
